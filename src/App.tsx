@@ -4,11 +4,13 @@ import './App.global.css';
 import ProjectBoards from './components/ProjectBoards';
 
 const Home: React.FC = () => {
+
+
   return (
     <div className="flex justify-center">
 
       <div className="min-h-screen flex overflow-x-scroll py-12">
-       <ProjectBoards/>
+      <ProjectBoards/>
       </div>
     </div>
   );
