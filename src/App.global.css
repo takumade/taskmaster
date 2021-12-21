@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.ghost-card {
+  opacity: 0.5;
+  background: #F7FAFC;
+  border: 1px solid #4299e1;
+}
+
+.column-width {
+  min-width: 320px;
+  width: 320px;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
