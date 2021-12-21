@@ -1,8 +1,23 @@
+## Taskmaster
+![GitHub](https://img.shields.io/github/license/takumade/taskmaster)
+
+Is a Kanban board for managing tasks.
+
+## Features
+
+
+
+## Stack
+- Electron 
+- React 
+- Recoil (State Management)
+- Tailwind (CSS)
+
 ## Install
 
 ```bash
-git clone --depth 1 --single-branch https://github.com/princejoogie/erb-tailwind.git your-project-name
-cd your-project-name
+git clone https://github.com/takumade/taskmaster.git
+cd taskmaster
 yarn
 ```
 
@@ -22,8 +37,6 @@ To package apps for the local platform:
 yarn package
 ```
 
-[![Build Status][github-actions-status]][github-actions-url]
-[![LICENSE](https://img.shields.io/github/license/princejoogie/erb-tailwind)](https://github.com/princejoogie/erb-tailwind/blob/master/LICENSE)
+## Contributing
 
-[github-actions-status]: https://github.com/princejoogie/erb-tailwind/workflows/Test/badge.svg
-[github-actions-url]: https://github.com/princejoogie/erb-tailwind/actions
+In the meantime i am not taking any contributions.
