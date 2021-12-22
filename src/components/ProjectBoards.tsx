@@ -1,94 +1,48 @@
-import React, { useEffect } from 'react'
+import React, {useEffect} from 'react'
 import {DragDropContext} from 'react-beautiful-dnd'
-import { exampleBoard } from '../seeds/boardExample'
+import {exampleBoard} from '../seeds/boardExample'
 import BoardColumn from './Column'
-
-import Column from '../interfaces/column'
-
-import {
-  useRecoilState,
-} from 'recoil';
+import {useRecoilState} from 'recoil';
 import boardState from '../atoms/boardState';
+import styled from 'styled-components';
+import ProjectBoardController from '../controllers/projectBoardController'
+import NewColumn from './board/NewColumn';
 
-
-
-
-
+const Container = styled.div `
+    display: flex;
+  `
 
 export default function ProjectBoards() {
 
-  const [board, setBoard] = useRecoilState(boardState);
+    const [board,
+        setBoard] = useRecoilState(boardState);
 
-  useEffect(() => {
-    setBoard(exampleBoard);
-  }, [])
+    useEffect(() => {
+        setBoard(exampleBoard);
+    }, [])
 
+    let projectBoardCtrller = new ProjectBoardController(board);
 
-  const onDragEnd = (result:any) => {
-      console.log(result)
+    const onDragEnd = (result : any) => {
+        let newBoard = projectBoardCtrller.handleOnDragEnd(result);
+        newBoard
+            ? setBoard(newBoard)
+            : null;
+    }
 
-      const {destination, source, draggableId} = result;
+    return (
+        <DragDropContext onDragEnd={onDragEnd}>
 
-      if (!destination){
-        return;
-      }
-
-      if (destination.droppableId === source.droppableId && destination.index === source.index){
-        return;
-      }
-
-      const affectedColumn = board.filter((column:Column) => column.id == source.droppableId)[0];
-      const destinationColumn = board.filter((column:Column) => column.id == destination.droppableId)[0];
-
-      if (affectedColumn === destinationColumn){
-        const newTasks = [...affectedColumn.tasks];
-
-        const [removed] = newTasks.splice(source.index, 1);
-        newTasks.splice(destination.index, 0, removed);
+            <Container>
+                {board.map((column, index) => {
+                    return <BoardColumn key={column.id} index={index} columnData={column}/>
+                })
 
 
-        let newColumn = {...affectedColumn, tasks: newTasks};
-        const newBoard = board.map((column:Column) => column.id === source.droppableId ? newColumn : column);
+}
 
-        setBoard(newBoard);
-      }else{
-        const affectedColTasks = [...affectedColumn.tasks];
-        const [removeTask] = affectedColTasks.splice(source.index, 1);
-
-        const newAffectedColumn = {
-          ...affectedColumn,
-          tasks: affectedColTasks
-        };
-
-        const destColTasks = [...destinationColumn.tasks];
-        destColTasks.push(removeTask);
-        // destColTasks.splice(destination.index, 0, removeTask);
-
-        const newDestinationColumn = {
-          ...destinationColumn,
-          tasks: destColTasks
-        }
-
-
-        let newBoard = board.map((column:Column) => column.id ==  newAffectedColumn.id ? newAffectedColumn : column);
-        newBoard = newBoard.map((column:Column) => column.id == newDestinationColumn.id ? newDestinationColumn : column);
-        setBoard(newBoard);
-
-      }
-
-
-  }
-
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      {
-        board.map((column, index) => {
-            return <BoardColumn
-                    key={index}
-                    columnData={column}/>
-        })
-      }
-
-    </DragDropContext>
-  )
+<NewColumn/>
+            </Container>
+        </DragDropContext>
+    )
 }
