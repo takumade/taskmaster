@@ -2,88 +2,126 @@ import Column from "../interfaces/column";
 
 class ProjectBoardController {
 
-    board: Column[];
+    board : Column[];
 
-    constructor(board: Column[]) {
-      this.board = board;
+    constructor(board : Column[]) {
+        this.board = board;
     }
 
-    getAffectedColumn = (source: { droppableId: string; }) => {
-      return this.board.filter((column:Column) => column.id == source.droppableId)[0];
+    getAffectedColumn = (source : {
+        droppableId: string;
+    }) => {
+        return this
+            .board
+            .filter((column : Column) => column.id == source.droppableId)[0];
     }
 
-    getDestinationColumn = (destination: { droppableId: string; }) => {
-      return this.board.filter((column:Column) => column.id == destination.droppableId)[0];
+    getDestinationColumn = (destination : {
+        droppableId: string;
+    }) => {
+        return this
+            .board
+            .filter((column : Column) => column.id == destination.droppableId)[0];
     }
 
-    handleOnDragEnd = (result:any)  =>{
+    handleOnDragEnd = (result : any) => {
 
-      const {destination, source, draggableId} = result;
+        const {destination, source, draggableId, type} = result;
 
-      if (!destination){
-        return;
-      }
 
-      if (destination.droppableId === source.droppableId && destination.index === source.index){
-        return;
-      }
+        if (!destination) {
+            return;
+        }
 
-      const affectedColumn = this.getAffectedColumn(source)
-      const destinationColumn = this.getDestinationColumn(destination)
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
+            return;
+        }
 
-      if (affectedColumn === destinationColumn){
-        return this.reorderColumnCards(affectedColumn, source, destination);
-      }else{
-        return this.moveCardToNewColumn(affectedColumn, destinationColumn, source);
+        console.log(result);
 
-      }
+        if (type === 'task') {
 
-      return this.board;
+            const affectedColumn = this.getAffectedColumn(source)
+            const destinationColumn = this.getDestinationColumn(destination)
+
+            if (affectedColumn === destinationColumn) {
+                return this.reorderColumnCards(affectedColumn, source, destination);
+            } else {
+                return this.moveCardToNewColumn(affectedColumn, destinationColumn, source);
+
+            }
+
+        }else if (type === 'column') {
+             const newBoard = this.board
+             newBoard.splice(source.index, 1);
+              newBoard.splice(destination.index, 0, this.board[draggableId]);
+
+              return newBoard
+
+
+        }
+
+        return this.board;
 
     }
 
-    reorderColumnCards = (affectedColumn: Column, source: { index: number; droppableId: string }, destination: { index: number }) => {
-      const newTasks = [...affectedColumn.tasks];
+    reorderColumnCards = (affectedColumn : Column, source : {
+        index: number;
+        droppableId: string
+    }, destination : {
+        index: number
+    }) => {
+        const newTasks = [...affectedColumn.tasks];
 
-          const [removed] = newTasks.splice(source.index, 1);
-          newTasks.splice(destination.index, 0, removed);
+        const [removed] = newTasks.splice(source.index, 1);
+        newTasks.splice(destination.index, 0, removed);
 
+        let newColumn = {
+            ...affectedColumn,
+            tasks: newTasks
+        };
+        const newBoard = this
+            .board
+            .map((column : Column) => column.id === source.droppableId
+                ? newColumn
+                : column);
 
-          let newColumn = {...affectedColumn, tasks: newTasks};
-          const newBoard = this.board.map((column:Column) => column.id === source.droppableId ? newColumn : column);
-
-          return newBoard
+        return newBoard
 
     }
 
-    moveCardToNewColumn = (affectedColumn:Column, destinationColumn:Column, source: { index: number }) => {
-      const affectedColTasks = [...affectedColumn.tasks];
-          const [removeTask] = affectedColTasks.splice(source.index, 1);
+    moveCardToNewColumn = (affectedColumn : Column, destinationColumn : Column, source : {
+        index: number
+    }) => {
+        const affectedColTasks = [...affectedColumn.tasks];
+        const [removeTask] = affectedColTasks.splice(source.index, 1);
 
-          const newAffectedColumn = {
+        const newAffectedColumn = {
             ...affectedColumn,
             tasks: affectedColTasks
-          };
+        };
 
-          const destColTasks = [...destinationColumn.tasks];
-          destColTasks.push(removeTask);
-          // destColTasks.splice(destination.index, 0, removeTask);
+        const destColTasks = [...destinationColumn.tasks];
+        destColTasks.push(removeTask);
+        // destColTasks.splice(destination.index, 0, removeTask);
 
-          const newDestinationColumn = {
+        const newDestinationColumn = {
             ...destinationColumn,
             tasks: destColTasks
-          }
+        }
 
+        let newBoard = this
+            .board
+            .map((column : Column) => column.id == newAffectedColumn.id
+                ? newAffectedColumn
+                : column);
+        newBoard = newBoard.map((column : Column) => column.id == newDestinationColumn.id
+            ? newDestinationColumn
+            : column);
 
-          let newBoard = this.board.map((column:Column) => column.id ==  newAffectedColumn.id ? newAffectedColumn : column);
-          newBoard = newBoard.map((column:Column) => column.id == newDestinationColumn.id ? newDestinationColumn : column);
-
-          return newBoard
+        return newBoard
     }
 
-
-
 };
-
 
 export default ProjectBoardController;
