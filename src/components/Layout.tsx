@@ -15,7 +15,7 @@ export default function Layout(props : {
 
             <div
                 className="flex fixed flex-col w-64 h-screen px-4 py-8 bg-white border-r dark:bg-gray-800 dark:border-gray-600">
-                <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">Brand</h2>
+                <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">Task Master</h2>
 
                 <div className="relative mt-6">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -99,7 +99,7 @@ export default function Layout(props : {
                             src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
                             alt="avatar"/>
                         <h4
-                            className="mx-2 font-medium text-gray-800 dark:text-gray-200 hover:underline">John Doe</h4>
+                            className="mx-2 font-medium text-gray-800 dark:text-gray-200 hover:underline">Agent Doe</h4>
                     </div>
                 </div>
 
