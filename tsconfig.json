@@ -7,6 +7,7 @@
     "declarationMap": true,
     "noEmit": true,
     "jsx": "react",
+    "outDir": "dist",
     "strict": true,
     "pretty": true,
     "sourceMap": true,
