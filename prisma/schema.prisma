@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./taskmaster.db"
+}
+
+model Group {
+  id        Int @id @default(autoincrement())
+  name     String @default("General")
+  projects Project[]
+  createdAt  DateTime   @default(now())
+
+  @@map("groups")
+}
+
+model ProjectLabels {
+   id        Int @id @default(autoincrement())
+   name      String
+   color     String
+   project   Project @relation(fields: [projectId], references: [id])
+   projectId Int
+   createdAt  DateTime   @default(now())
+   @@map("labels")
+
+}
+
+model Project {
+  id          Int @id @default(autoincrement())
+  name        String
+  group       Group @relation(fields: [groupId], references: [id])
+  groupId     Int
+  labels      ProjectLabels[]
+  columns     BoardColumn[]
+  createdAt  DateTime   @default(now())
+  @@map("projects")
+}
+
+model BoardColumn {
+  id        Int @id @default(autoincrement())
+  title     String
+  color     String
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  tasks    Task[]
+  createdAt  DateTime   @default(now())
+  @@map("columns")
+
+}
+
+model Task {
+  id               String @unique @id @default(cuid())
+  title            String
+  description      String
+  date             String
+  time             String
+  column         BoardColumn @relation(fields: [columnId], references: [id])
+  columnId       Int
+  todos         TaskTodo[]
+  comments      TaskComments[]
+  labels        TaskLabels[]
+  createdAt  DateTime   @default(now())
+  @@map("tasks")
+}
+
+model TaskTodo {
+  id               Int @id @default(autoincrement())
+  name             String
+  completed        Boolean @default(false)
+  task             Task @relation(fields: [taskId], references: [id])
+  taskId          String
+  createdAt  DateTime   @default(now())
+  @@map("task_todos")
+}
+
+model TaskLabels {
+  id               Int @id @default(autoincrement())
+  name             String
+  task      Task @relation(fields: [taskId], references: [id])
+   taskId    String
+  createdAt  DateTime   @default(now())
+  @@map("task_labels")
+}
+
+model TaskComments {
+   id               Int @id @default(autoincrement())
+   message          String
+   task      Task @relation(fields: [taskId], references: [id])
+   taskId    String
+   createdAt  DateTime   @default(now())
+   @@map("task_comments")
+}
+
+model Settings {
+  id               Int @id @default(autoincrement())
+  name             String
+  value            String
+  @@map("settings")
+}
